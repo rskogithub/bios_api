@@ -183,7 +183,23 @@ class T_kes_layanan_model extends CI_Model
             'tgl_transaksi' => $data['tgl_transaksi'],
             'jumlah' => $data['jumlah'],
             'message' => $result['message'],
-            'user' => $this->session->userdata('nama'),
+            'user' => 'CRON',
+            'create_date' => date('Y-m-d H:i:s'),
+        );
+        $this->db->insert('t_kes_lay_lab_sampel', $return_data);
+    }
+
+    function insert_kes_lay_radiologi($data)
+    {
+        $response = $this->_client->request('POST', 'kesehatan/layanan/radiologi', [
+            'form_params' => $data
+        ]);
+        $result = json_decode($response->getBody()->getContents(), true);
+        $return_data = array(
+            'tgl_transaksi' => $data['tgl_transaksi'],
+            'jumlah' => $data['jumlah'],
+            'message' => $result['message'],
+            'user' => 'CRON',
             'create_date' => date('Y-m-d H:i:s'),
         );
         $this->db->insert('t_kes_lay_lab_sampel', $return_data);
@@ -271,7 +287,7 @@ class T_kes_layanan_model extends CI_Model
         $this->db2->from('zx_t_bill a');
         $this->db2->join('zx_hasil_lab b', 'a.no_order = b.no_order');
         $this->db2->where('a.kode_group', 'LAB');
-        $this->db2->where('CAST(a.create_date AS date)', $yesterday);
+        $this->db2->where('date(a.create_date)', $yesterday);
         $this->db2->group_by('a.kode_tindakan');
         return $this->db2->get()->result();
     }
@@ -280,12 +296,24 @@ class T_kes_layanan_model extends CI_Model
     {
         $yesterday = date('Y-m-d', strtotime("-1 days"));
 
-        $this->db2->select('COUNT(DISTINCT a.noreg) as ttl');
+        $this->db2->select('COUNT(DISTINCT a.no_order) as ttl');
         $this->db2->from('zx_t_bill a');
         $this->db2->join('zx_hasil_lab b', 'a.no_order = b.no_order');
         $this->db2->where('a.kode_group', 'LAB');
-        $this->db2->where('CAST(a.create_date AS date)', $yesterday);
+        $this->db2->where('date(a.create_date)', $yesterday);
         $this->db2->group_by('a.no_order');
+        return $this->db2->get()->result();
+    }
+
+    function get_count_layanan_rad()
+    {
+        $yesterday = date('Y-m-d', strtotime("-1 days"));
+
+        $this->db2->select('COUNT(DISTINCT a.noreg) as ttl');
+        $this->db2->from('zx_t_bill a');
+        $this->db2->join('zx_t_radiologi_order b', 'a.noreg = b.PATIENT_UID');
+        $this->db2->where('a.kode_group', 'RAD');
+        $this->db2->where('date(a.create_date)', $yesterday);
         return $this->db2->get()->result();
     }
 }

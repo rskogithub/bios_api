@@ -94,23 +94,34 @@ class T_kes_layanan extends CI_Controller
         $result_lab_parameter = $this->T_kes_layanan_model->get_count_layanan_lab_parameter();
         foreach ($result_lab_parameter as $row) {
             $yesterday_lab_para = date('Y-m-d', strtotime("-1 days"));
-            $data_ranap = array(
+            $data_lab_para = array(
                 'tgl_transaksi' => $yesterday_lab_para,
                 'nama_layanan' => $row->nama_tindakan,
                 'jumlah' => $row->ttl,
             );
-            $this->T_kes_layanan_model->insert_kes_lay_lab_parameter($data_ranap);
+            $this->T_kes_layanan_model->insert_kes_lay_lab_parameter($data_lab_para);
         }
 
         // JUMLAH LAYANAN LAB SAMPEL
         $result_lab_sampel = $this->T_kes_layanan_model->get_count_layanan_lab_sampel();
         foreach ($result_lab_sampel as $row) {
             $yesterday_lab_sam = date('Y-m-d', strtotime("-1 days"));
-            $data_ranap = array(
+            $data_lab_sam = array(
                 'tgl_transaksi' => $yesterday_lab_sam,
                 'jumlah' => $row->ttl,
             );
-            $this->T_kes_layanan_model->insert_kes_lay_lab_sampel($data_ranap);
+            $this->T_kes_layanan_model->insert_kes_lay_lab_sampel($data_lab_sam);
+        }
+
+
+        $result_rad = $this->T_kes_layanan_model->get_count_layanan_rad();
+        foreach ($result_rad as $row) {
+            $yesterday_rad = date('Y-m-d', strtotime("-1 days"));
+            $data_rad = array(
+                'tgl_transaksi' => $yesterday_rad,
+                'jumlah' => $row->ttl,
+            );
+            $this->T_kes_layanan_model->insert_kes_lay_radiologi($data_rad);
         }
     }
 }
