@@ -301,8 +301,7 @@ class T_kes_layanan_model extends CI_Model
         $this->db2->join('zx_hasil_lab b', 'a.no_order = b.no_order');
         $this->db2->where('a.kode_group', 'LAB');
         $this->db2->where('date(a.create_date)', $yesterday);
-        $this->db2->group_by('a.no_order');
-        return $this->db2->get()->result();
+        return $this->db2->get()->row();
     }
 
     function get_count_layanan_rad()
