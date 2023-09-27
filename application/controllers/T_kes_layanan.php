@@ -103,15 +103,15 @@ class T_kes_layanan extends CI_Controller
         }
 
         // JUMLAH LAYANAN LAB SAMPEL
-        // $result_lab_sampel = $this->T_kes_layanan_model->get_count_layanan_lab_sampel();
-        // foreach ($result_lab_sampel as $row) {
-        //     $yesterday_lab_sam = date('Y-m-d', strtotime("-1 days"));
-        //     $data_ranap = array(
-        //         'tgl_transaksi' => $yesterday_lab_sam,
-        //         'jumlah' => $row->ttl,
-        //     );
-        //     $this->T_kes_layanan_model->insert_kes_lay_lab_sampel($data_ranap);
-        // }
+        $result_lab_sampel = $this->T_kes_layanan_model->get_count_layanan_lab_sampel();
+        foreach ($result_lab_sampel as $row) {
+            $yesterday_lab_sam = date('Y-m-d', strtotime("-1 days"));
+            $data_ranap = array(
+                'tgl_transaksi' => $yesterday_lab_sam,
+                'jumlah' => $row->ttl,
+            );
+            $this->T_kes_layanan_model->insert_kes_lay_lab_sampel($data_ranap);
+        }
     }
 }
 
