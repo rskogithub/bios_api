@@ -202,7 +202,7 @@ class T_kes_layanan_model extends CI_Model
             'user' => 'CRON',
             'create_date' => date('Y-m-d H:i:s'),
         );
-        $this->db->insert('t_kes_lay_lab_sampel', $return_data);
+        $this->db->insert('t_kes_lay_radiologi', $return_data);
     }
 
     function get_count_kunjungan_rajal()

@@ -113,7 +113,7 @@ class T_kes_layanan extends CI_Controller
             $this->T_kes_layanan_model->insert_kes_lay_lab_sampel($data_lab_sam);
         }
 
-
+        // JUMLAH LAYANAN RAD
         $result_rad = $this->T_kes_layanan_model->get_count_layanan_rad();
         foreach ($result_rad as $row) {
             $yesterday_rad = date('Y-m-d', strtotime("-1 days"));
