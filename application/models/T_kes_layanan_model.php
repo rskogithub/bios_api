@@ -40,8 +40,6 @@ class T_kes_layanan_model extends CI_Model
         ]);
     }
 
-
-
     function insert_kes_lay_forensik($data)
     {
         $response = $this->_client->request('POST', 'kesehatan/layanan/forensik', [
@@ -158,6 +156,39 @@ class T_kes_layanan_model extends CI_Model
         $this->db->insert('t_kes_lay_tindakan_operasi', $return_data);
     }
 
+    function insert_kes_lay_lab_parameter($data)
+    {
+        $response = $this->_client->request('POST', 'kesehatan/layanan/laboratorium_detail', [
+            'form_params' => $data
+        ]);
+        $result = json_decode($response->getBody()->getContents(), true);
+        $return_data = array(
+            'tgl_transaksi' => $data['tgl_transaksi'],
+            'jumlah' => $data['jumlah'],
+            'nama_layanan' => $data['nama_layanan'],
+            'message' => $result['message'],
+            'user' => 'CRON',
+            'create_date' => date('Y-m-d H:i:s'),
+        );
+        $this->db->insert('t_kes_lay_lab_parameter', $return_data);
+    }
+
+    function insert_kes_lay_lab_sampel($data)
+    {
+        $response = $this->_client->request('POST', 'kesehatan/layanan/laboratorium', [
+            'form_params' => $data
+        ]);
+        $result = json_decode($response->getBody()->getContents(), true);
+        $return_data = array(
+            'tgl_transaksi' => $data['tgl_transaksi'],
+            'jumlah' => $data['jumlah'],
+            'message' => $result['message'],
+            'user' => $this->session->userdata('nama'),
+            'create_date' => date('Y-m-d H:i:s'),
+        );
+        $this->db->insert('t_kes_lay_lab_sampel', $return_data);
+    }
+
     function get_count_kunjungan_rajal()
     {
         $yesterday = date('Y-m-d', strtotime("-1 days"));
@@ -229,6 +260,31 @@ class T_kes_layanan_model extends CI_Model
         $this->db2->join('zx_m_kelas c', 'b.kode_kelas = c.kode_kelas');
         $this->db2->where('b.perawatan_flag', 'RAWAT');
         $this->db2->group_by('c.kode_kelas');
+        return $this->db2->get()->result();
+    }
+
+    function get_count_layanan_lab_parameter()
+    {
+        $yesterday = date('Y-m-d', strtotime("-1 days"));
+
+        $this->db2->select('COUNT(DISTINCT a.no_order) as ttl,a.nama_tindakan');
+        $this->db2->from('zx_t_bill a');
+        $this->db2->join('zx_hasil_lab b', 'a.no_order = b.no_order');
+        $this->db2->where('a.kode_group', 'LAB');
+        $this->db2->where('CAST(a.create_date AS date', $yesterday);
+        $this->db2->group_by('a.kode_tindakan');
+        return $this->db2->get()->result();
+    }
+
+    function get_count_layanan_lab_sampel()
+    {
+        $yesterday = date('Y-m-d', strtotime("-1 days"));
+        $this->db2->select('COUNT(DISTINCT a.noreg) as ttl');
+        $this->db2->from('zx_t_bill a');
+        $this->db2->join('zx_hasil_lab b', 'a.no_order = b.no_order');
+        $this->db2->where('a.kode_group', 'LAB');
+        $this->db2->where('CAST(a.create_date AS date', $yesterday);
+        $this->db2->group_by('a.no_order');
         return $this->db2->get()->result();
     }
 }
