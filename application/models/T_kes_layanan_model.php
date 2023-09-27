@@ -170,7 +170,7 @@ class T_kes_layanan_model extends CI_Model
             'user' => 'CRON',
             'create_date' => date('Y-m-d H:i:s'),
         );
-        $this->db->insert('t_kes_lay_lab_parameter', $return_data);
+        // $this->db->insert('t_kes_lay_lab_parameter', $return_data);
     }
 
     // function insert_kes_lay_lab_sampel($data)
