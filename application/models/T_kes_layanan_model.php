@@ -21,11 +21,11 @@ class T_kes_layanan_model extends CI_Model
         $client = new Client();
         $response = $client->request(
             'POST',
-            'https://training-bios2.kemenkeu.go.id/api/token',
+            'https://bios.kemenkeu.go.id/api/token',
             [
                 'form_params' => [
                     'satker' => '415670',
-                    'key' => 'liLUUX5GwITpoFHDP7PxIJlOwkO5kysz'
+                    'key' => 'RzMss9waUcqzeCJ3D4PNYbCGfmq3ojdv'
                 ]
             ]
         )->getBody()->getContents();
@@ -33,28 +33,45 @@ class T_kes_layanan_model extends CI_Model
         $get_token = $token['token'];
 
         $this->_client = new Client([
-            'base_uri' => 'https://training-bios2.kemenkeu.go.id/api/ws/',
+            'base_uri' => 'https://bios.kemenkeu.go.id/api/ws/',
             'headers' => [
                 'Token' => $get_token,
             ]
         ]);
     }
 
-    function insert_kes_lay_forensik($data)
-    {
-        $response = $this->_client->request('POST', 'kesehatan/layanan/forensik', [
-            'form_params' => $data
-        ]);
-        $result = json_decode($response->getBody()->getContents(), true);
-        $return_data = array(
-            'tgl_transaksi' => $data['tgl_transaksi'],
-            'jumlah' => $data['jumlah'],
-            'message' => $result['message'],
-            'user' => 'CRON',
-            'create_date' => date('Y-m-d H:i:s'),
-        );
-        $this->db->insert('t_kes_lay_forensik', $return_data);
-    }
+    // function insert_kes_lay_pasien_ranap($data)
+    // {
+    //     $response = $this->_client->request('POST', 'kesehatan/layanan/pasien_ranap', [
+    //         'form_params' => $data
+    //     ]);
+    //     $result = json_decode($response->getBody()->getContents(), true);
+    //     $return_data = array(
+    //         'tgl_transaksi' => $data['tgl_transaksi'],
+    //         'kode_kelas' => $data['kode_kelas'],
+    //         'jumlah' => $data['jumlah'],
+    //         'message' => $result['message'],
+    //         'user' => 'CRON',
+    //         'create_date' => date('Y-m-d H:i:s'),
+    //     );
+    //     $this->db->insert('t_kes_lay_pasien_ranap', $return_data);
+    // }
+
+    // function insert_kes_lay_forensik($data)
+    // {
+    //     $response = $this->_client->request('POST', 'kesehatan/layanan/forensik', [
+    //         'form_params' => $data
+    //     ]);
+    //     $result = json_decode($response->getBody()->getContents(), true);
+    //     $return_data = array(
+    //         'tgl_transaksi' => $data['tgl_transaksi'],
+    //         'jumlah' => $data['jumlah'],
+    //         'message' => $result['message'],
+    //         'user' => 'CRON',
+    //         'create_date' => date('Y-m-d H:i:s'),
+    //     );
+    //     $this->db->insert('t_kes_lay_forensik', $return_data);
+    // }
 
     function insert_kes_lay_kunjungan_rajal($data)
     {
@@ -122,39 +139,22 @@ class T_kes_layanan_model extends CI_Model
         $this->db->insert('t_kes_lay_pasien_rajal', $return_data);
     }
 
-    function insert_kes_lay_pasien_ranap($data)
-    {
-        $response = $this->_client->request('POST', 'kesehatan/layanan/pasien_ranap', [
-            'form_params' => $data
-        ]);
-        $result = json_decode($response->getBody()->getContents(), true);
-        $return_data = array(
-            'tgl_transaksi' => $data['tgl_transaksi'],
-            'kode_kelas' => $data['kode_kelas'],
-            'jumlah' => $data['jumlah'],
-            'message' => $result['message'],
-            'user' => 'CRON',
-            'create_date' => date('Y-m-d H:i:s'),
-        );
-        $this->db->insert('t_kes_lay_pasien_ranap', $return_data);
-    }
-
-    function insert_kes_lay_tindakan_operasi($data)
-    {
-        $response = $this->_client->request('POST', 'kesehatan/layanan/operasi', [
-            'form_params' => $data
-        ]);
-        $result = json_decode($response->getBody()->getContents(), true);
-        $return_data = array(
-            'tgl_transaksi' => $data['tgl_transaksi'],
-            'klasifikasi_operasi' => $data['klasifikasi_operasi'],
-            'jumlah' => $data['jumlah'],
-            'message' => $result['message'],
-            'user' => 'CRON',
-            'create_date' => date('Y-m-d H:i:s'),
-        );
-        $this->db->insert('t_kes_lay_tindakan_operasi', $return_data);
-    }
+    // function insert_kes_lay_tindakan_operasi($data)
+    // {
+    //     $response = $this->_client->request('POST', 'kesehatan/layanan/operasi', [
+    //         'form_params' => $data
+    //     ]);
+    //     $result = json_decode($response->getBody()->getContents(), true);
+    //     $return_data = array(
+    //         'tgl_transaksi' => $data['tgl_transaksi'],
+    //         'klasifikasi_operasi' => $data['klasifikasi_operasi'],
+    //         'jumlah' => $data['jumlah'],
+    //         'message' => $result['message'],
+    //         'user' => 'CRON',
+    //         'create_date' => date('Y-m-d H:i:s'),
+    //     );
+    //     $this->db->insert('t_kes_lay_tindakan_operasi', $return_data);
+    // }
 
     function insert_kes_lay_lab_parameter($data)
     {
@@ -207,64 +207,61 @@ class T_kes_layanan_model extends CI_Model
 
     function get_count_kunjungan_rajal()
     {
-        $yesterday = date('Y-m-d', strtotime("-1 days"));
+        $date_from = date('Y-m-d', strtotime("-1 days"));
+        $date_to = date('Y-m-d', strtotime("-1 days"));
 
-        $this->db2->select('COUNT(DISTINCT a.noreg) as ttl');
+        $this->db2->select('a.tgl_reg,COUNT(DISTINCT a.noreg) as ttl');
         $this->db2->from('zx_t_pendaftaran a');
         $this->db2->join('zx_m_poli_sub b', 'a.kode_poli_sub = b.kode_poli_sub');
-        $this->db2->where('a.tgl_reg', $yesterday);
+        $this->db2->where('a.tgl_reg  >=', $date_from);
+        $this->db2->where('a.tgl_reg  <=', $date_to);
         $this->db2->where_in('b.kode_poli_sub', ['ANK', 'PD', 'GG', 'JW01', 'GZ', 'PR', 'RM', 'UM01', 'NK01', 'SRF', 'NPZ03', 'JW02', 'JW03', 'JW04', 'GRT', 'PSI', 'ANK01', 'PD01', 'GG01', 'PR01', 'RM01', 'UM02', 'SRF01', 'NPZ04', 'JW05', 'JW06', 'GRT01', 'PSI01', 'NK03', 'PRJ']);
-        return $this->db2->get()->row();
+        $this->db2->group_by('a.tgl_reg');
+        return $this->db2->get()->result();
     }
 
-    function get_count_pasien_bpjs()
+    function get_count_pasien_bpjs_nonbpjs()
     {
-        $yesterday = date('Y-m-d', strtotime("-1 days"));
+        $date_from = date('Y-m-d', strtotime("-1 days"));
+        $date_to = date('Y-m-d', strtotime("-1 days"));
 
-        $this->db2->select('COUNT(DISTINCT a.noreg) as ttl');
+        $this->db2->select('a.tgl_reg, COUNT(DISTINCT(CASE WHEN a.kode_bayar = "BPJS" THEN a.noreg END)) ttl_bpjs,COUNT(DISTINCT(CASE WHEN a.kode_bayar != "BPJS" THEN a.noreg END)) ttl_nonbpjs');
         $this->db2->from('zx_t_pendaftaran a');
         $this->db2->join('zx_m_poli_sub b', 'a.kode_poli_sub = b.kode_poli_sub');
-        $this->db2->where('a.tgl_reg', $yesterday);
+        $this->db2->where('a.tgl_reg  >=', $date_from);
+        $this->db2->where('a.tgl_reg  <=', $date_to);
         $this->db2->where_in('b.kode_poli_sub', ['ANK', 'PD', 'GG', 'JW01', 'GZ', 'PR', 'RM', 'UM01', 'NK01', 'SRF', 'NPZ03', 'JW02', 'JW03', 'JW04', 'GRT', 'PSI', 'ANK01', 'PD01', 'GG01', 'PR01', 'RM01', 'UM02', 'SRF01', 'NPZ04', 'JW05', 'JW06', 'GRT01', 'PSI01', 'NK03', 'PRJ']);
-        $this->db2->where('a.kode_bayar', 'BPJS');
-        return $this->db2->get()->row();
-    }
-
-    function get_count_pasien_nonbpjs()
-    {
-        $yesterday = date('Y-m-d', strtotime("-1 days"));
-
-        $this->db2->select('COUNT(DISTINCT a.noreg) as ttl');
-        $this->db2->from('zx_t_pendaftaran a');
-        $this->db2->join('zx_m_poli_sub b', 'a.kode_poli_sub = b.kode_poli_sub');
-        $this->db2->where('a.tgl_reg', $yesterday);
-        $this->db2->where_in('b.kode_poli_sub', ['ANK', 'PD', 'GG', 'JW01', 'GZ', 'PR', 'RM', 'UM01', 'NK01', 'SRF', 'NPZ03', 'JW02', 'JW03', 'JW04', 'GRT', 'PSI', 'ANK01', 'PD01', 'GG01', 'PR01', 'RM01', 'UM02', 'SRF01', 'NPZ04', 'JW05', 'JW06', 'GRT01', 'PSI01', 'NK03', 'PRJ']);
-        $this->db2->where('a.kode_bayar !=', 'BPJS');
-        return $this->db2->get()->row();
+        $this->db2->group_by('a.tgl_reg');
+        return $this->db2->get()->result();
     }
 
     function get_count_pasien_igd()
     {
-        $yesterday = date('Y-m-d', strtotime("-1 days"));
+        $date_from = date('Y-m-d', strtotime("-1 days"));
+        $date_to = date('Y-m-d', strtotime("-1 days"));
 
-        $this->db2->select('COUNT(DISTINCT a.noreg) as ttl');
+        $this->db2->select('a.tgl_reg,COUNT(DISTINCT a.noreg) as ttl');
         $this->db2->from('zx_t_pendaftaran a');
         $this->db2->join('zx_m_poli_sub b', 'a.kode_poli_sub = b.kode_poli_sub');
-        $this->db2->where('a.tgl_reg', $yesterday);
+        $this->db2->where('a.tgl_reg  >=', $date_from);
+        $this->db2->where('a.tgl_reg  <=', $date_to);
         $this->db2->where_in('b.kode_poli_sub', ['IGD']);
-        return $this->db2->get()->row();
+        $this->db2->group_by('a.tgl_reg');
+        return $this->db2->get()->result();
     }
 
     function get_count_pasien_rajal()
     {
-        $yesterday = date('Y-m-d', strtotime("-1 days"));
+        $date_from = date('Y-m-d', strtotime("-1 days"));
+        $date_to = date('Y-m-d', strtotime("-1 days"));
 
-        $this->db2->select('COUNT(DISTINCT a.noreg) as ttl,b.nama_poli_sub');
+        $this->db2->select('a.tgl_reg,COUNT(DISTINCT a.noreg) as ttl,b.nama_poli_sub');
         $this->db2->from('zx_t_pendaftaran a');
         $this->db2->join('zx_m_poli_sub b', 'a.kode_poli_sub = b.kode_poli_sub');
-        $this->db2->where('a.tgl_reg', $yesterday);
+        $this->db2->where('a.tgl_reg  >=', $date_from);
+        $this->db2->where('a.tgl_reg  <=', $date_to);
         $this->db2->where_in('b.kode_poli_sub', ['ANK', 'PD', 'GG', 'JW01', 'GZ', 'PR', 'RM', 'UM01', 'NK01', 'SRF', 'NPZ03', 'JW02', 'JW03', 'JW04', 'GRT', 'PSI', 'ANK01', 'PD01', 'GG01', 'PR01', 'RM01', 'UM02', 'SRF01', 'NPZ04', 'JW05', 'JW06', 'GRT01', 'PSI01', 'NK03', 'PRJ']);
-        $this->db2->group_by('a.kode_poli_sub');
+        $this->db2->group_by('a.tgl_reg,a.kode_poli_sub');
         return $this->db2->get()->result();
     }
 
@@ -281,38 +278,46 @@ class T_kes_layanan_model extends CI_Model
 
     function get_count_layanan_lab_parameter()
     {
-        $yesterday = date('Y-m-d', strtotime("-1 days"));
+        $date_from = date('Y-m-d', strtotime("-1 days"));
+        $date_to = date('Y-m-d', strtotime("-1 days"));
 
-        $this->db2->select('COUNT(DISTINCT a.no_order) as ttl,a.nama_tindakan');
+        $this->db2->select('date(a.create_date) as create_date,COUNT(DISTINCT a.no_order) as ttl,a.nama_tindakan');
         $this->db2->from('zx_t_bill a');
         $this->db2->join('zx_hasil_lab b', 'a.no_order = b.no_order');
         $this->db2->where('a.kode_group', 'LAB');
-        $this->db2->where('date(a.create_date)', $yesterday);
-        $this->db2->group_by('a.kode_tindakan');
+        $this->db2->where('date(a.create_date) >=', $date_from);
+        $this->db2->where('date(a.create_date) <=', $date_to);
+        $this->db2->group_by('date(a.create_date),a.kode_tindakan');
         return $this->db2->get()->result();
     }
 
     function get_count_layanan_lab_sampel()
     {
-        $yesterday = date('Y-m-d', strtotime("-1 days"));
+        $date_from = date('Y-m-d', strtotime("-1 days"));
+        $date_to = date('Y-m-d', strtotime("-1 days"));
 
-        $this->db2->select('COUNT(DISTINCT a.no_order) as ttl');
+        $this->db2->select('date(a.create_date) as create_date,COUNT(DISTINCT a.no_order) as ttl');
         $this->db2->from('zx_t_bill a');
         $this->db2->join('zx_hasil_lab b', 'a.no_order = b.no_order');
         $this->db2->where('a.kode_group', 'LAB');
-        $this->db2->where('date(a.create_date)', $yesterday);
-        return $this->db2->get()->row();
+        $this->db2->where('date(a.create_date) >=', $date_from);
+        $this->db2->where('date(a.create_date) <=', $date_to);
+        $this->db2->group_by('date(a.create_date)');
+        return $this->db2->get()->result();
     }
 
     function get_count_layanan_rad()
     {
-        $yesterday = date('Y-m-d', strtotime("-1 days"));
+        $date_from = '2023-01-01';
+        $date_to = '2023-10-04';
 
-        $this->db2->select('COUNT(DISTINCT a.noreg) as ttl');
+        $this->db2->select('date(a.create_date) as create_date,COUNT(DISTINCT a.noreg) as ttl');
         $this->db2->from('zx_t_bill a');
         $this->db2->join('zx_t_radiologi_order b', 'a.noreg = b.PATIENT_UID');
         $this->db2->where('a.kode_group', 'RAD');
-        $this->db2->where('date(a.create_date)', $yesterday);
+        $this->db2->where('date(a.create_date) >=', $date_from);
+        $this->db2->where('date(a.create_date) <=', $date_to);
+        $this->db2->group_by('date(a.create_date)');
         return $this->db2->get()->result();
     }
 }
