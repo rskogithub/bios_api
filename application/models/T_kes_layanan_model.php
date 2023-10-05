@@ -308,8 +308,8 @@ class T_kes_layanan_model extends CI_Model
 
     function get_count_layanan_rad()
     {
-        $date_from = '2023-01-01';
-        $date_to = '2023-10-04';
+        $date_from = date('Y-m-d', strtotime("-1 days"));
+        $date_to = date('Y-m-d', strtotime("-1 days"));
 
         $this->db2->select('date(a.create_date) as create_date,COUNT(DISTINCT a.noreg) as ttl');
         $this->db2->from('zx_t_bill a');
