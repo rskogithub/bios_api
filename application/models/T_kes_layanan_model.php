@@ -40,22 +40,22 @@ class T_kes_layanan_model extends CI_Model
         ]);
     }
 
-    // function insert_kes_lay_pasien_ranap($data)
-    // {
-    //     $response = $this->_client->request('POST', 'kesehatan/layanan/pasien_ranap', [
-    //         'form_params' => $data
-    //     ]);
-    //     $result = json_decode($response->getBody()->getContents(), true);
-    //     $return_data = array(
-    //         'tgl_transaksi' => $data['tgl_transaksi'],
-    //         'kode_kelas' => $data['kode_kelas'],
-    //         'jumlah' => $data['jumlah'],
-    //         'message' => $result['message'],
-    //         'user' => 'CRON',
-    //         'create_date' => date('Y-m-d H:i:s'),
-    //     );
-    //     $this->db->insert('t_kes_lay_pasien_ranap', $return_data);
-    // }
+    function insert_kes_lay_pasien_ranap($data)
+    {
+        $response = $this->_client->request('POST', 'kesehatan/layanan/pasien_ranap', [
+            'form_params' => $data
+        ]);
+        $result = json_decode($response->getBody()->getContents(), true);
+        $return_data = array(
+            'tgl_transaksi' => $data['tgl_transaksi'],
+            'kode_kelas' => $data['kode_kelas'],
+            'jumlah' => $data['jumlah'],
+            'message' => $result['message'],
+            'user' => 'CRON',
+            'create_date' => date('Y-m-d H:i:s'),
+        );
+        $this->db->insert('t_kes_lay_pasien_ranap', $return_data);
+    }
 
     // function insert_kes_lay_forensik($data)
     // {
